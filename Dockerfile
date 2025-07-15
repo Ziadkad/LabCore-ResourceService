@@ -6,7 +6,7 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ResourceService.Api/Resourceervice.Api.csproj", "ResourceService.Api/"]
+COPY ["ResourceService.Api/ResourceService.Api.csproj", "ResourceService.Api/"]
 RUN dotnet restore "ResourceService.Api/ResourceService.Api.csproj"
 COPY . .
 

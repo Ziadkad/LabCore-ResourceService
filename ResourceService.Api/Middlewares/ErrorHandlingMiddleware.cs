@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Text.Json;
 using ResourceService.Application.Common.Exceptions;
 
@@ -25,7 +26,14 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         var message = ex.Message;
         IEnumerable<string> errors = Array.Empty<string>();
         
-        if (ex.GetType() == typeof(ForbiddenException))
+        if (ex.GetType() == typeof(ValidationException))
+        {
+            var exception = (FluentValidation.ValidationException)ex;
+            errors = exception.Errors.Select(e => e.ErrorMessage);
+            message = "Validation failed";
+            code = HttpStatusCode.BadRequest;
+        }
+        else if (ex.GetType() == typeof(ForbiddenException))
         {
             message = ex.Message;
             code = HttpStatusCode.Forbidden;
@@ -50,7 +58,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
             message = ex.Message;
             code = HttpStatusCode.InternalServerError;
         }
-
+        
         var result = JsonSerializer.Serialize(new { message, errors });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;

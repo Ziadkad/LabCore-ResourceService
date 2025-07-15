@@ -3,7 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ResourceService.Application.Common.Interfaces;
 using ResourceService.Infrastructure.Data;
+using ResourceService.Infrastructure.ExternalServices;
+using ResourceService.Infrastructure.ExternalServices.BrokerService;
 using ResourceService.Infrastructure.ExternalServices.UserContext;
+using ResourceService.Infrastructure.Repositories;
 
 namespace ResourceService.Infrastructure;
 
@@ -18,9 +21,15 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
         
         services.AddScoped<IUnitOfWork>(c => c.GetRequiredService<AppDbContext>());
-        
+        services.AddScoped<IResourceRepository, ResourceRepository>();
+        services.AddScoped<IResourceReservationRepository, ResourceReservationRepository>();
         
         services.AddHttpContextAccessor();
         services.AddScoped<IUserContext, UserContext>();
+
+        services.AddScoped<IReservationProducer, ReservationProducer>();
+        
+        
+        services.RegisterBrokerServices(configuration);
     }
 }
