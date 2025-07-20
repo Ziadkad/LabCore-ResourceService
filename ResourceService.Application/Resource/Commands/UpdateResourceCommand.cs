@@ -30,7 +30,19 @@ public class UpdateResourceCommandHandler(
         if (resource is null || resource.IsArchived)
             throw new NotFoundException(nameof(Resource), request.Id);
 
-        resource.Update(request.Name, request.Type, request.Description, request.QuantityAvailable, request.Status);
+        
+        int? quantityAvailable = null;
+        if (request.Type is ResourceType.Consumable)
+        {
+            if (request.QuantityAvailable is null)
+            {
+                throw new BadRequestException("QuantityAvailable is required if it's a Consumable.");
+            }
+            quantityAvailable = request.QuantityAvailable;
+        }
+
+        
+        resource.Update(request.Name, request.Type, request.Description, quantityAvailable, request.Status);
 
         resourceRepository.Update(resource);
 

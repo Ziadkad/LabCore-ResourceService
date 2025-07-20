@@ -35,7 +35,8 @@ public class CreateResourceCommandHandler(IResourceRepository resourceRepository
 {
     public async Task<ResourceDto> Handle(CreateResourceCommand request, CancellationToken cancellationToken)
     {
-        if (request.Type is ResourceType.Consumable || request.Type is ResourceType.Tool)
+        int? quantityAvailable = null;
+        if (request.Type is ResourceType.Consumable)
         {
             if (request.QuantityAvailable is null)
             {
@@ -46,9 +47,10 @@ public class CreateResourceCommandHandler(IResourceRepository resourceRepository
            {
                throw new BadRequestException($"A ressource with this Name already exists. ID {resources[0].Id}, it's better if you add to the quantity");
            }
+           quantityAvailable = request.QuantityAvailable;
         }
         
-        Domain.Resource.Resource resource = new Domain.Resource.Resource(request.Name, request.Type, request.Description, request.QuantityAvailable, request.Status);
+        Domain.Resource.Resource resource = new Domain.Resource.Resource(request.Name, request.Type, request.Description, quantityAvailable, request.Status);
         await resourceRepository.AddAsync(resource, cancellationToken);
         var isSaved = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (isSaved <= 0)

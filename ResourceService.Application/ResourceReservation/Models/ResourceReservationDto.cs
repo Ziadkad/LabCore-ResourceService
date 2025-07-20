@@ -8,5 +8,6 @@ public class ResourceReservationDto
     public Guid? TaskItemId { get; set; } 
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
+    public int Quantity { get; set; }
     public string? Notes { get; set; }
 }

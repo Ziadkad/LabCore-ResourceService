@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ResourceService.Api.Security;
 using ResourceService.Application.Common.Exceptions;
 using ResourceService.Application.Common.Models;
 using ResourceService.Application.Resource.Commands;
@@ -10,7 +11,7 @@ namespace ResourceService.Api.Controllers;
 
 public class ResourceController : BaseController
 {
-    [Authorize]
+    [Authorize(AuthPolicyName.ResourceManager)]
     [HttpPost]
     public async Task<IActionResult> CreateResource([FromBody] CreateResourceCommand command)
     {
@@ -18,7 +19,7 @@ public class ResourceController : BaseController
         return Ok(result);
     }
 
-    [Authorize]
+    [Authorize(AuthPolicyName.ResourceManager)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateResource(long id, [FromBody] UpdateResourceCommand command)
     {
@@ -30,7 +31,7 @@ public class ResourceController : BaseController
         return Ok(result);
     }
 
-    [Authorize]
+    [Authorize(AuthPolicyName.ResourceManager)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteResource(long id)
     {

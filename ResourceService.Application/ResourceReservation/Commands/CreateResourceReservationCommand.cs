@@ -102,7 +102,7 @@ public class CreateResourceReservationCommandHandler(
                 ResourceId = reservation.Id,
                 TaskItemId = request.TaskItemId.Value,
             };
-            await reservationProducer.SendAsync(message);
+                await reservationProducer.SendAsync(message);
         }
 
         return mapper.Map<ResourceReservationDto>(reservation);
