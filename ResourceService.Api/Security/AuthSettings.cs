@@ -42,6 +42,9 @@ public static class AuthSettings
 
             options.AddPolicy(AuthPolicyName.Manager, policy =>
                 policy.RequireRole("Manager"));
+            
+            options.AddPolicy(AuthPolicyName.ResourceManager, policy =>
+                policy.RequireRole("ResourceManager"));
         });
     }
 }

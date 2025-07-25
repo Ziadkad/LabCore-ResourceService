@@ -1,0 +1,67 @@
+﻿@startuml
+
+' ===== BaseModel =====
+class BaseModel {
+  - DateTime CreatedOn
+  - Guid CreatedBy
+  - DateTime? ModifiedOn
+  - Guid? ModifiedBy
+  - bool IsArchived
+
+  + void UpdateAudit(Guid)
+  + void CreateAudit(Guid)
+  + void SetArchived()
+}
+
+' ===== Resource =====
+class Resource {
+  - long Id
+  - string Name
+  - ResourceType Type
+  - string? Description
+  - int? QuantityAvailable
+  - ResourceStatus Status
+  - string? ImageUrl
+
+  + void Update(...)
+  + void setImageUrl(string)
+  + void setResourceReservations(List<ResourceReservation>)
+}
+
+' ===== ResourceReservation =====
+class ResourceReservation {
+  - long Id
+  - long ResourceId
+  - Guid ReservedBy
+  - Guid? TaskItemId
+  - DateTime StartTime
+  - DateTime EndTime
+  - int? Quantity
+  - string? Notes
+
+  + constructor(...)
+}
+
+' ===== Enums =====
+enum ResourceType {
+  Consumable
+  Room
+  Tool
+  Other
+}
+
+enum ResourceStatus {
+  Available
+  UnderMaintenance
+  Unavailable
+}
+
+' ===== Inheritance =====
+Resource --|> BaseModel
+ResourceReservation --|> BaseModel
+
+' ===== Associations =====
+Resource "1" --> "0..*" ResourceReservation : reservations
+ResourceReservation --> Resource : refers to
+
+@enduml
